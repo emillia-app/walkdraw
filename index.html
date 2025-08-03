@@ -1,41 +1,121 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <!-- ВАЖНО: Viewport для адаптивности -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>WalkDraw Mini App</title>
-    <!-- Подключаем стили -->
-    <link rel="stylesheet" href="static/style.css">
-    <!-- Подключаем скрипт Telegram WebApp API -->
-    <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+  <title>WalkDrow</title>
 </head>
+
 <body>
-    <!-- Контент внутри контейнера -->
-    <div class="container">
-        <h1>🚶‍♀️ WalkDraw</h1>
-        <p class="subtitle">Выберите готовый маршрут</p>
-
-        <div id="status-section">
-            <p id="status-text">Загрузка маршрутов...</p>
-        </div>
-
-        <div id="routes-container">
-            <!-- Маршруты будут здесь -->
-        </div>
-
-        <div class="filters">
-            <input type="text" id="search-input" placeholder="🔍 Поиск маршрута...">
-            <!-- Фильтры -->
-        </div>
-
-        <div class="profile-summary">
-            <p>Пройдено: <span id="completed-count">0</span></p>
-            <p>Всего: <span id="total-distance">0</span> км</p>
-        </div>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">WalkDrow</div>
+      <div class="location">
+        📍 Ваш город: Москва
+        <button>Выбрать город</button>
+      </div>
     </div>
 
+    <!-- Difficulty -->
+    <div class="difficulty">
+      <h3>Сложность маршрута</h3>
+      <div class="difficulty-buttons">
+        <button class="difficulty-btn easy">Легкий</button>
+        <button class="difficulty-btn medium">Средний</button>
+        <button class="difficulty-btn hard">Сложный</button>
+        <button class="difficulty-btn vip">VIP</button>
+      </div>
+    </div>
+
+    <!-- Routes -->
+    <div class="routes">
+      <h3>Популярные маршруты</h3>
+      <div class="route-card">
+        <div class="route-img">
+          <div class="difficulty-dot easy-dot"></div>
+        </div>
+        <div class="route-info">
+          <h4>Парк Горького</h4>
+          <p>Исторические здания и живописные аллеи</p>
+          <p class="route-time">⏱️ 1.5 часа</p>
+        </div>
+        <button class="route-btn">Начать</button>
+      </div>
+
+      <div class="route-card">
+        <div class="route-img">
+          <div class="difficulty-dot medium-dot"></div>
+        </div>
+        <div class="route-info">
+          <h4>Красная площадь</h4>
+          <p>Культурное сердце столицы</p>
+          <p class="route-time">⏱️ 2 часа</p>
+        </div>
+        <button class="route-btn">Начать</button>
+      </div>
+
+      <div class="route-card">
+        <div class="route-img">
+          <div class="difficulty-dot hard-dot"></div>
+        </div>
+        <div class="route-info">
+          <h4>ВДНХ</h4>
+          <p>Архитектура и советское наследие</p>
+          <p class="route-time">⏱️ 3 часа</p>
+        </div>
+        <button class="route-btn">Начать</button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress">
+    <h3>Ваш прогресс</h3>
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Пройдено 12 из 20 маршрутов</div>
+
+    <!-- Статистика: км, ккал, шаги -->
+    <div class="progress-stats-grid">
+        <div class="stat-item">
+        <div class="stat-icon">🚶‍♂️</div>
+        <div class="stat-value">128</div>
+        <div class="stat-label">км</div>
+        </div>
+        <div class="stat-item">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">8 450</div>
+        <div class="stat-label">ккал</div>
+        </div>
+        <div class="stat-item">
+        <div class="stat-icon">👣</div>
+        <div class="stat-value">1.2M</div>
+        <div class="stat-label">шагов</div>
+        </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Footer Navigation -->
+  <div class="footer">
+    <div class="nav-item active">
+      <div class="nav-icon">🏠</div>
+      <span>Главная</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">🗺️</div>
+      <span>Маршруты</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">👤</div>
+      <span>Профиль</span>
+    </div>
+  </div>
+
     <!-- Подключаем основной скрипт -->
-    <script src="static/script.js"></script>
+    <script src="assets/script.js"></script>
 </body>
 </html>
