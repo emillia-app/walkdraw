@@ -1,0 +1,75 @@
+/* static/style.css (дополнения/изменения) */
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+#main-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Расстояние между кнопками */
+}
+
+.primary-btn {
+    background-color: #4CAF50; /* Основной зеленый */
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Расстояние между иконкой и текстом */
+}
+
+.primary-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px); /* Легкий подъем при наведении */
+}
+
+.primary-btn:active {
+    transform: translateY(0); /* Возврат при клике */
+}
+
+.secondary-btn {
+    background-color: #f0f0f0; /* Светло-серый фон */
+    color: #333; /* Темный текст */
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd; /* Тонкая граница */
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.secondary-btn:hover {
+    background-color: #e9e9e9;
+    border-color: #ccc;
+}
+
+.info-section {
+    margin-top: 30px;
+    text-align: center;
+    color: #888;
+}
+
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 350px) {
+    .primary-btn {
+        font-size: 16px;
+        padding: 12px;
+    }
+    .secondary-btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
