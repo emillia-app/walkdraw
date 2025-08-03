@@ -1,37 +1,41 @@
-<!-- index.html (фрагмент body) -->
-<div class="container">
-    <h1>🚶‍♀️ WalkDraw</h1>
-    <p class="subtitle">Рисуй фигуры шагами!</p>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- ВАЖНО: Viewport для адаптивности -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>WalkDraw Mini App</title>
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="static/style.css">
+    <!-- Подключаем скрипт Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+</head>
+<body>
+    <!-- Контент внутри контейнера -->
+    <div class="container">
+        <h1>🚶‍♀️ WalkDraw</h1>
+        <p class="subtitle">Выберите готовый маршрут</p>
 
-    <!-- Статус или приветствие -->
-    <div id="welcome-section">
-        <p id="welcome-text">Готовы к прогулке?</p>
+        <div id="status-section">
+            <p id="status-text">Загрузка маршрутов...</p>
+        </div>
+
+        <div id="routes-container">
+            <!-- Маршруты будут здесь -->
+        </div>
+
+        <div class="filters">
+            <input type="text" id="search-input" placeholder="🔍 Поиск маршрута...">
+            <!-- Фильтры -->
+        </div>
+
+        <div class="profile-summary">
+            <p>Пройдено: <span id="completed-count">0</span></p>
+            <p>Всего: <span id="total-distance">0</span> км</p>
+        </div>
     </div>
 
-    <!-- Основные действия -->
-    <div id="main-actions">
-        <!-- Кнопка для получения геолокации и выбора маршрута -->
-        <button id="startRouteBtn" class="primary-btn">
-            🚶‍♂️ Начать маршрут
-        </button>
-
-        <!-- Альтернатива, если геолокация не нужна сразу -->
-        <!-- <button id="selectCityRouteBtn" class="primary-btn">
-            🗺 Выбрать маршрут
-        </button> -->
-
-        <!-- Просмотр профиль/статистика -->
-        <button id="profileBtn" class="secondary-btn">
-            👤 Мой профиль
-        </button>
-    </div>
-
-    <!-- Информационная секция (внизу) -->
-    <div class="info-section">
-        <p><small>📍 Отправьте геолокацию для поиска ближайших маршрутов.</small></p>
-        <!-- Или если маршрут уже выбран/начат -->
-        <!-- <p id="current-route-info" style="display:none;">
-            <small>Текущий маршрут: <span id="current-shape-name">-</span></small>
-        </p> -->
-    </div>
-</div>
+    <!-- Подключаем основной скрипт -->
+    <script src="static/script.js"></script>
+</body>
+</html>
