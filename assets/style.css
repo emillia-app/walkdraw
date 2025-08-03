@@ -337,3 +337,77 @@ body {
     margin-top: 10px;
   }
 }
+.location-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.location-info p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.location-info button {
+    margin-left: 10px;
+    flex-shrink: 0; /* Кнопка не сжимается */
+}
+
+#cities-list-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+#cities-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Адаптивная сетка */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.city-item {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 0.9em;
+}
+
+.city-item:hover {
+    background-color: #e9e9e9;
+    border-color: #4CAF50;
+}
+
+.city-item.selected {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #45a049;
+}
+
+/* Адаптивность для списка городов */
+@media (max-width: 480px) {
+    #cities-list {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Меньше колонок на маленьком экране */
+    }
+    
+    .location-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .location-info button {
+        margin-left: 0;
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+}

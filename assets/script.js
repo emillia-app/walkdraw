@@ -1,19 +1,20 @@
 // static/script.js
 
-// --- Переменные ---
+// --- Глобальные переменные ---
 let userLocation = null; // { lat, lng }
-let userCity = null;     // { key, name }
+let selectedCityKey = null; // Ключ выбранного города из CITIES
+let selectedCityName = "Не определен"; // Название выбранного города для отображения
 
 // --- Функции обновления UI ---
 
 /**
- * Обновляет отображение статуса определения города в шапке.
- * @param {string|null} cityName Название города или null/'Не определен'.
+ * Обновляет отображение выбранного города.
+ * @param {string} cityName Название города или "Не определен".
  */
-function updateLocationDisplay(cityName) {
-    const cityNameElement = document.getElementById('city-name');
-    if (cityNameElement) {
-        cityNameElement.textContent = cityName || 'Не определен';
+function updateSelectedCityDisplay(cityName) {
+    const citySpan = document.getElementById('selected-city');
+    if (citySpan) {
+        citySpan.textContent = cityName || 'Не определен';
     }
 }
 
@@ -41,6 +42,88 @@ function hideStatusMessage() {
     if (statusSection) {
         statusSection.style.display = 'none';
     }
+}
+
+/**
+ * Показывает список городов.
+ */
+function showCitiesList() {
+    const modal = document.getElementById('cities-modal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+/**
+ * Скрывает список городов.
+ */
+function hideCitiesList() {
+    const modal = document.getElementById('cities-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Заполняет модальное окно со списком городов.
+ * @param {Object} cities Объект с данными городов {city_key: {name: "...", ...}}.
+ */
+function populateCitiesModal(cities) {
+    const listContainer = document.getElementById('cities-list');
+    if (!listContainer) {
+        console.error("Контейнер списка городов (#cities-list) не найден.");
+        return;
+    }
+
+    if (!cities || Object.keys(cities).length === 0) {
+        listContainer.innerHTML = '<p>Города не загружены.</p>';
+        return;
+    }
+
+    // Очищаем контейнер
+    listContainer.innerHTML = '';
+
+    // Создаем элементы для каждого города
+    for (const [cityKey, cityInfo] of Object.entries(cities)) {
+        const cityDiv = document.createElement('div');
+        cityDiv.className = 'city-item';
+        cityDiv.textContent = cityInfo.name;
+        cityDiv.dataset.cityKey = cityKey; // Сохраняем ключ в data-атрибуте
+        
+        // Добавляем обработчик клика
+        cityDiv.addEventListener('click', () => {
+            selectCity(cityKey, cityInfo.name);
+        });
+        
+        listContainer.appendChild(cityDiv);
+    }
+}
+
+/**
+ * Выбирает город.
+ * @param {string} cityKey Ключ города.
+ * @param {string} cityName Название города.
+ */
+function selectCity(cityKey, cityName) {
+    console.log(`Выбран город: ${cityName} (${cityKey})`);
+    
+    // Сохраняем выбранный город
+    selectedCityKey = cityKey;
+    selectedCityName = cityName;
+
+    // Обновляем отображение выбранного города
+    updateSelectedCityDisplay(cityName);
+
+    // Скрываем список городов
+    hideCitiesList();
+
+    // Отправляем данные в бот (опционально, если нужно сразу сообщить о выборе)
+    // sendDataToBot({ action: "city_selected", city_key: cityKey, city_name: cityName });
+    
+    // Здесь можно добавить логику обновления других частей UI, зависящих от города
+    // updateAvailableRoutesForCity(cityKey);
+    // updateShapesForCity(cityKey);
+    // updateDifficultiesForCity(cityKey);
 }
 
 // --- Функции работы с геолокацией и городом ---
@@ -168,94 +251,52 @@ async function determineCity(lat, lng) {
 
 /**
  * Основная функция для определения города.
- * Сначала пытается тихо получить геолокацию, если не удается - запрашивает у пользователя.
+ * Сначала пытается тихо получить геолокацию, если не удается - оставляет "Не определен".
  */
 async function determineUserLocationAndCity() {
     console.log("Начало процесса определения местоположения и города...");
 
-    // 1. Попытка тихого получения
+    // 1. Показываем "Не определен" сразу
+    updateSelectedCityDisplay("Не определен");
+    showStatusMessage("Определение местоположения...", 'info');
+
+    // 2. Попытка тихого получения
     let coords = await trySilentGeoLocation();
 
     if (coords) {
         userLocation = coords;
-        // 2. Определение города по координатам
+        // 3. Определение города по координатам
         const city = await determineCity(coords.lat, coords.lng);
         if (city) {
-            userCity = city;
-            updateLocationDisplay(city.name);
-            showStatusMessage(`Город определен: ${city.name}`, 'info');
-            // Отправляем данные в бот
-            sendDataToBot({
-                action: "location_and_city_determined",
-                lat: coords.lat,
-                lng: coords.lng,
-                city_key: city.key,
-                city_name: city.name
-            });
-            return;
+            selectCity(city.key, city.name); // Используем нашу функцию выбора
+            hideStatusMessage(); // Скрываем статус, если всё ок
         } else {
             // Координаты есть, но город не определен
-            updateLocationDisplay('Не определен');
+            updateSelectedCityDisplay('Не определен');
             showStatusMessage("Город по координатам не найден. Выберите вручную.", 'warning');
-            return;
         }
     } else {
         // Тихо не получилось
         console.log("Тихое определение не удалось. Город не определен.");
-        updateLocationDisplay('Не определен');
+        updateSelectedCityDisplay('Не определен');
+        hideStatusMessage(); // Скрываем статус, если нет ошибки
         // showStatusMessage("Город не определен. Нажмите 'Выбрать город'.", 'warning');
-        // Не показываем сообщение сразу, пусть пользователь сам нажмет кнопку
     }
 }
 
 /**
  * Обработчик клика по кнопке "Выбрать город".
- * Запрашивает геолокацию у пользователя.
+ * Показывает модальное окно со списком городов.
  */
-async function onSelectLocationClick() {
+function onSelectLocationClick() {
     console.log("Кнопка 'Выбрать город' нажата.");
-    hideStatusMessage(); // Скрываем предыдущие сообщения
-
-    // 1. Запрашиваем геолокацию у пользователя
-    const coords = await requestGeoLocation();
-
-    if (coords) {
-        userLocation = coords;
-        // 2. Определяем город
-        showStatusMessage("Определение города...", 'info');
-        const city = await determineCity(coords.lat, coords.lng);
-
-        if (city) {
-            userCity = city;
-            updateLocationDisplay(city.name);
-            showStatusMessage(`Город определен: ${city.name}`, 'info');
-            // Отправляем данные в бот
-            sendDataToBot({
-                action: "location_and_city_determined",
-                lat: coords.lat,
-                lng: coords.lng,
-                city_key: city.key,
-                city_name: city.name
-            });
-        } else {
-            updateLocationDisplay('Не определен');
-            showStatusMessage("Город по координатам не найден. Попробуйте другой способ.", 'warning');
-            // Здесь можно реализовать ручной выбор из списка городов
-        }
-    }
-    // Если coords null, requestGeoLocation уже показал ошибку
+    showCitiesList();
+    // hideStatusMessage(); // Скрываем предыдущие сообщения
 }
 
 // --- Основная инициализация ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Mini App загружается...");
-    updateLocationDisplay('Определение...'); // Показываем состояние "загрузка"
-
-    // --- Назначение обработчиков ---
-    const selectLocationBtn = document.getElementById('select-location-btn');
-    if (selectLocationBtn) {
-        selectLocationBtn.addEventListener('click', onSelectLocationClick);
-    }
 
     // --- Инициализация Telegram WebApp ---
     if (window.Telegram && window.Telegram.WebApp) {
@@ -272,6 +313,41 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Приложение запущено вне Telegram или Telegram WebApp API недоступен.");
         showStatusMessage("Предупреждение: Приложение запущено вне Telegram.", 'warning');
     }
+
+    // --- Назначение обработчиков ---
+    const selectLocationBtn = document.getElementById('select-location-btn');
+    if (selectLocationBtn) {
+        selectLocationBtn.addEventListener('click', onSelectLocationClick);
+    }
+
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', hideCitiesList);
+    }
+
+    // Закрытие модального окна при клике вне его
+    const modal = document.getElementById('cities-modal');
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                hideCitiesList();
+            }
+        });
+    }
+
+    // --- Загрузка и отображение городов ---
+    // В реальном приложении здесь будет fetch к вашему API или локальный JSON
+    // Пока используем статические данные
+    const mockCities = {
+        "moscow": {"name": "Москва"},
+        "spb": {"name": "Санкт-Петербург"},
+        "novosibirsk": {"name": "Новосибирск"},
+        "ekb": {"name": "Екатеринбург"},
+        "kazan": {"name": "Казань"},
+        "surgut": {"name": "Сургут"}
+        // ... другие города из CITIES
+    };
+    populateCitiesModal(mockCities);
 
     // --- Автоматическое определение ---
     // Запускаем процесс определения местоположения и города
