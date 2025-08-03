@@ -12,11 +12,20 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="logo">WalkDrow</div>
+      <div class="logo">WalkDraw</div>
       <div class="location">
-        📍 Ваш город: Москва
-        <button>Выбрать город</button>
+            <!-- Элемент для отображения статуса города -->
+            <span id="location-status">
+            📍 Ваш город: <span id="city-name">Определение...</span>
+            </span>
+            <!-- Кнопка для выбора/обновления города -->
+            <button id="select-location-btn">Выбрать город</button>
       </div>
+    </div>
+
+        <!-- Status Section (для сообщений) -->
+    <div id="status-section" style="margin-top: 10px; padding: 10px; border-radius: 5px; display:none;">
+      <p id="status-text"></p>
     </div>
 
     <!-- Difficulty -->
